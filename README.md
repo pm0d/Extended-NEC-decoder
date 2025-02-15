@@ -1,8 +1,8 @@
-## 📟 Extended-NEC-decoder
-### Convert Extended NEC to Raw NEC data effortlessly!
+## Extended-NEC-decoder 📟
+#### Convert Extended NEC to Raw NEC data effortlessly!
 You can use the converter online at the [link here](https://pm0d.github.io/Extended-NEC-decoder/Extended%20NEC%20decoder.html). 
 
-### Project Background
+#### Project Background
 Have a phone with IR blaster but the remote app doesn't have all the buttons to control your TV or other appliances?  
 That's what happened for me, and it sent me down the deep rabbit hole of infrared signal protocols and their various formats.
 
