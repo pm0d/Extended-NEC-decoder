@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extended NEC decoder</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 370px;
+            width: 100%;
+            text-align: center;
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Convert Extended NEC to Raw NEC data</h1>
+        <div>
+            <input type="text" id="address" maxlength="11" placeholder="Address (hex) e.g. 00 F3 00 00" oninput="calculateNEC()">
+        </div>
+        <div>
+            <input type="text" id="command" maxlength="11" placeholder="Command (hex) e.g. 91 6E 00 00" oninput="calculateNEC()">
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function reverseBits(input, nbits) {
+            if (nbits <= 1) return input;
+            nbits = Math.min(nbits, (input.toString(2).length));
+            let output = 0;
+            for (let i = 0; i < nbits; i++) {
+                output <<= 1;
+                output |= (input & 1);
+                input >>= 1;
+            }
+            return output;
+        }
+
+        function calculateNEC() {
+            const addressInput = document.getElementById('address').value.replace(/\s/g, '');
+            const commandInput = document.getElementById('command').value.replace(/\s/g, '');
+            if (!addressInput || !commandInput) {
+                document.getElementById('result').innerText = "Please enter valid hexadecimal values.";
+                return;
+            }
+            const address = parseInt(addressInput.substring(0, 4), 16);
+            let command = parseInt(commandInput.substring(0, 2), 16);
+
+            // Reverse the command bits
+            const reversedCommand = reverseBits(command, 8);
+
+            // Calculate the new command
+            const newCommand = (reversedCommand << 8) + (reversedCommand ^ 0xFF);
+
+            // Reverse the address bits
+            const reversedAddress = reverseBits(address, 16);
+
+            // Calculate the final raw NEC data
+            const rawNEC = (reversedAddress << 16) + newCommand;
+
+            // Display the result
+            document.getElementById('result').innerText = `Raw NEC Data: 0x${rawNEC.toString(16).toUpperCase()}`;
+        }
+    </script>
+</body>
+</html>
